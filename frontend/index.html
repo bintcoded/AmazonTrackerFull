@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Amazon Endangered Species Tracker</title>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+ 
+<nav>
+  <a class="nav-brand" href="index.html"><span>🌿 Amazon Tracker</span></a>
+  <a class="nav-link active" href="index.html">Home</a>
+  <a class="nav-link" href="view.html">View Species</a>
+  <a class="nav-link" href="add.html">Add Species</a>
+  <a class="nav-link" href="edit.html">Update Species</a>
+  <a class="nav-link" href="delete.html">Delete Species</a>
+  <a class="nav-link" href="documentation.html">Documentation</a>
+</nav>
+ 
+<div class="wrap">
+ 
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="eyebrow">University Database Course · Amazon Rainforest</div>
+    <h1>Amazon <em>Endangered</em><br>Species Tracker</h1>
+    <p>A relational database application for exploring rare and threatened wildlife across the Amazon Rainforest; conservation status, threats, and geographic distribution.</p>
+    <br>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-n">63</div><div class="stat-l">Species</div></div>
+      <div class="stat"><div class="stat-n">6</div><div class="stat-l">Statuses</div></div>
+      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Threats</div></div>
+      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Regions</div></div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Animal Types</div></div>
+    </div>
+  </div>
+ 
+  <!-- About Banner -->
+  <div class="section">
+    <div style="background:linear-gradient(135deg,#02353C 0%,#0a5a4a 50%,#116650 100%);padding:52px 48px;border-radius:12px;border:2px solid rgba(63,208,201,.25);margin-bottom:40px;">
+      <div style="display:grid;grid-template-columns:1fr 200px;gap:48px;align-items:start;">
+        <div>
+          <div class="eyebrow" style="margin-bottom:14px;">About the Amazon</div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:900;color:#fff;margin-bottom:20px;">The Lungs of Our Planet</h2>
+          <div style="font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;color:rgba(193,246,237,.9);line-height:1.8;">
+            <p style="margin-bottom:14px;">The Amazon Rainforest is the largest tropical rainforest on Earth, spanning over <strong style="color:#3FD0C9;">5.5 million km²</strong> across nine countries and covering nearly 40% of South America. Home to more than <strong style="color:#3FD0C9;">10% of all species on Earth</strong>, it hosts over 40,000 plant species, 3,000 freshwater fish, 1,300 bird species, and 430 mammals.</p>
+            <p style="margin-bottom:14px;">The Amazon produces approximately <strong style="color:#3FD0C9;">20% of the world's oxygen</strong> and stores an estimated 150–200 billion tonnes of carbon, making it the single most important terrestrial buffer against climate change.</p>
+            <p>Since 1970, over <strong style="color:#3FD0C9;">800,000 km²</strong> of forest have been lost to deforestation. Scientists warn that if deforestation reaches 20–25% of total forest loss, the Amazon could begin converting irreversibly into dry savanna while releasing catastrophic amounts of carbon and triggering climate feedback loops felt worldwide.</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:rgba(63,208,201,.1);border:1px solid rgba(63,208,201,.3);border-radius:6px;padding:14px;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#3FD0C9;">55M</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;color:rgba(193,246,237,.6);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;">Years Old</div>
+          </div>
+          <div style="background:rgba(63,208,201,.1);border:1px solid rgba(63,208,201,.3);border-radius:6px;padding:14px;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#3FD0C9;">20%</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;color:rgba(193,246,237,.6);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;">World Oxygen</div>
+          </div>
+          <div style="background:rgba(63,208,201,.1);border:1px solid rgba(63,208,201,.3);border-radius:6px;padding:14px;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#3FD0C9;">40K+</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;color:rgba(193,246,237,.6);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;">Plant Species</div>
+          </div>
+          <div style="background:rgba(63,208,201,.1);border:1px solid rgba(63,208,201,.3);border-radius:6px;padding:14px;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#3FD0C9;">800K</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;color:rgba(193,246,237,.6);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;">km² Lost</div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- About the Data -->
+    <div class="sec-title">About the Data</div>
+    <p class="sec-sub">Sources · Methodology · Coverage</p>
+ 
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:36px;">
+      <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--lime);text-transform:uppercase;margin-bottom:10px;">Primary Source</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:8px;">IUCN Red List</div>
+        <p style="font-size:13px;color:#02535c;line-height:1.7;">Conservation status, population estimates, and threat assessments for all tracked species. The global authority on species extinction risk.</p>
+        <a href="https://www.iucnredlist.org" target="_blank" style="display:inline-block;margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);text-decoration:none;letter-spacing:1px;">iucnredlist.org →</a>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--lime);text-transform:uppercase;margin-bottom:10px;">Birds Data</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:8px;">BirdLife International</div>
+        <p style="font-size:13px;color:#02535c;line-height:1.7;">Population estimates for Harpy Eagle (~50,000), Hyacinth Macaw (~6,500), and other Amazonian bird species. Species factsheets updated annually.</p>
+        <a href="https://www.birdlife.org" target="_blank" style="display:inline-block;margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);text-decoration:none;letter-spacing:1px;">birdlife.org →</a>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--lime);text-transform:uppercase;margin-bottom:10px;">Deforestation</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:8px;">Igarapé Institute</div>
+        <p style="font-size:13px;color:#02535c;line-height:1.7;">Inventory of Data on Economic Activity and Deforestation in the Amazon Basin (Nov 2022). Key statistics on drivers, rates, and regional breakdown.</p>
+        <a href="https://igarape.org.br" target="_blank" style="display:inline-block;margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);text-decoration:none;letter-spacing:1px;">igarape.org.br →</a>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--lime);text-transform:uppercase;margin-bottom:10px;">Mammals</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:8px;">WWF Living Planet Report</div>
+        <p style="font-size:13px;color:#02535c;line-height:1.7;">2024 report documenting a 65% decline in Amazon river dolphins and 75% decline in tucuxi between 1994–2016. Latin American species down 95% since 1970.</p>
+        <a href="https://www.worldwildlife.org" target="_blank" style="display:inline-block;margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);text-decoration:none;letter-spacing:1px;">worldwildlife.org →</a>
+      </div>
+    </div>
+ 
+    <!-- Quick Navigation Cards -->
+    <div class="sec-title">Explore the Application</div>
+    <p class="sec-sub">Navigate to a page</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+      <a href="view.html" style="text-decoration:none;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;transition:all .2s;display:block;" onmouseover="this.style.borderColor='#2EAF7D';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#C1F6ED';this.style.transform=''">
+        <div style="font-size:1.8rem;margin-bottom:10px;">🔍</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">View</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--dark);">Browse Species</div>
+        <p style="font-size:12px;color:#02535c;margin-top:6px;line-height:1.6;">Search, filter, and explore all species in the database.</p>
+      </a>
+      <a href="add.html" style="text-decoration:none;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;transition:all .2s;display:block;" onmouseover="this.style.borderColor='#2EAF7D';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#C1F6ED';this.style.transform=''">
+        <div style="font-size:1.8rem;margin-bottom:10px;">➕</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Add</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--dark);">Add New Species</div>
+        <p style="font-size:12px;color:#02535c;margin-top:6px;line-height:1.6;">Insert a new species record into the database.</p>
+      </a>
+      <a href="edit.html" style="text-decoration:none;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;transition:all .2s;display:block;" onmouseover="this.style.borderColor='#2EAF7D';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#C1F6ED';this.style.transform=''">
+        <div style="font-size:1.8rem;margin-bottom:10px;">✏️</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Update</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--dark);">Edit a Record</div>
+        <p style="font-size:12px;color:#02535c;margin-top:6px;line-height:1.6;">Update conservation status or species information.</p>
+      </a>
+      <a href="delete.html" style="text-decoration:none;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;transition:all .2s;display:block;" onmouseover="this.style.borderColor='#d63030';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#C1F6ED';this.style.transform=''">
+        <div style="font-size:1.8rem;margin-bottom:10px;">🗑️</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#d63030;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Delete</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--dark);">Remove a Record</div>
+        <p style="font-size:12px;color:#02535c;margin-top:6px;line-height:1.6;">Permanently remove a species from the database.</p>
+      </a>
+      <a href="documentation.html" style="text-decoration:none;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:24px;transition:all .2s;display:block;" onmouseover="this.style.borderColor='#2EAF7D';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#C1F6ED';this.style.transform=''">
+        <div style="font-size:1.8rem;margin-bottom:10px;">📄</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--lime);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Docs</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;color:var(--dark);">Documentation</div>
+        <p style="font-size:12px;color:#02535c;margin-top:6px;line-height:1.6;">Setup guide, user manual, and app info.</p>
+      </a>
+    </div>
+  </div>
+ 
+</div>
+ 
+<footer>
+  <div class="wrap">Amazon Endangered Species Tracker · Natalia Dycha & Sara Al-Hachami · Wayne State University · Database Course 2026</div>
+</footer>
+ 
+</body>
+</html>

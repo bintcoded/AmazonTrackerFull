@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Add Species · Amazon Tracker</title>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span>🌿 Amazon Tracker</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="View.html">View Species</a>
+  <a class="nav-link active" href="Add.html">Add Species</a>
+  <a class="nav-link" href="Edit.html">Update Species</a>
+  <a class="nav-link" href="Delete.html">Delete Species</a>
+  <a class="nav-link" href="documentation.html">Documentation</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Database · INSERT Operation</div>
+    <h1>Add <em>New Species</em></h1>
+    <p>Fill in the form below to insert a new species into the PostgreSQL database. This sends a POST request to <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--lime);">POST /species</code>.</p>
+  </div>
+
+  <div class="section">
+    <div style="display:grid;grid-template-columns:1fr 290px;gap:32px;align-items:start;">
+
+      <div>
+        <div class="sec-title">Species Information</div>
+        <p class="sec-sub">Fields marked * are required</p>
+
+        <div id="msg" class="alert" style="display:none;"></div>
+
+        <div class="form-card">
+          <!-- Basic Info -->
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--ice);">Basic Information</div>
+
+          <div class="form-group">
+            <label>Common Name <span class="req">*</span></label>
+            <input type="text" id="commonname" class="form-control" placeholder="e.g., Amazon River Dolphin">
+          </div>
+          <div class="form-group">
+            <label>Scientific Name <span class="req">*</span></label>
+            <input type="text" id="scientificname" class="form-control" placeholder="e.g., Inia geoffrensis">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Animal Type <span class="req">*</span></label>
+              <select id="organismtypeid" class="form-control">
+                <option value="">— Loading... —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Region <span class="req">*</span></label>
+              <select id="regionid" class="form-control">
+                <option value="">— Loading... —</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Conservation Status -->
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin:20px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--ice);">Conservation</div>
+
+          <div class="form-group">
+            <label>IUCN Status <span class="req">*</span></label>
+            <select id="statusid" class="form-control">
+              <option value="">— Loading... —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Habitat</label>
+            <input type="text" id="habitat" class="form-control" placeholder="e.g., Rivers and flooded forests">
+          </div>
+
+          <!-- Threats (multi-select) -->
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin:20px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--ice);">Threats</div>
+
+          <div class="form-group">
+            <label>Select Threats (hold Ctrl/Cmd to pick multiple)</label>
+            <select id="threatids" class="form-control" multiple style="height:120px;">
+              <option value="">Loading...</option>
+            </select>
+            <div class="form-hint">Hold Ctrl (Windows) or Cmd (Mac) to select multiple threats.</div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:8px;">
+            <button class="btn btn-primary" onclick="submitAdd()">➕ Insert into Database</button>
+            <button class="btn btn-outline" onclick="clearForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SQL Preview Panel -->
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:8px;">SQL Being Sent</div>
+        <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;overflow:hidden;">
+          <div style="background:rgba(193,246,237,.25);padding:10px 16px;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dark);text-transform:uppercase;">INSERT Statement</div>
+          <pre id="sql-preview" style="padding:16px;font-size:11px;line-height:1.8;color:var(--dark);overflow-x:auto;white-space:pre-wrap;background:transparent;margin:0;"></pre>
+        </div>
+
+        <div style="margin-top:16px;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:18px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:10px;">API Endpoint</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dark);">
+            <div style="color:#2EAF7D;font-weight:600;">POST</div>
+            <div>http://localhost:3000/species</div>
+          </div>
+          <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);">Request Body (JSON)</div>
+          <pre id="json-preview" style="margin-top:6px;padding:10px;font-size:10px;line-height:1.7;background:rgba(193,246,237,.15);border-radius:4px;color:var(--dark);white-space:pre-wrap;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">Amazon Endangered Species Tracker · Natalia Dycha &amp; Sara Al-Hachami · Wayne State University · 2026</div>
+</footer>
+
+<script src="api.js"></script>
+<script>
+// Load dropdown options from backend on page load
+async function loadDropdowns() {
+  try {
+    const [types, statuses, regions, threats] = await Promise.all([
+      LookupAPI.getOrganismTypes(),
+      LookupAPI.getStatuses(),
+      LookupAPI.getRegions(),
+      LookupAPI.getThreats()
+    ]);
+    await populateSelect('organismtypeid', types,   'organismtypeid', 'type',        '— Select Type —');
+    await populateSelect('statusid',       statuses, 'statusid',       'statusvalue', '— Select Status —');
+    await populateSelect('regionid',       regions,  'regionid',       'regionname',  '— Select Region —');
+    // Multi-select for threats
+    const threatSel = document.getElementById('threatids');
+    threatSel.innerHTML = '';
+    threats.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.threatid;
+      opt.textContent = t.threatname;
+      threatSel.appendChild(opt);
+    });
+    // Wire live SQL preview
+    ['commonname','scientificname','organismtypeid','statusid','regionid','habitat','threatids'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', updatePreview);
+      if (el) el.addEventListener('input',  updatePreview);
+    });
+    updatePreview();
+  } catch (err) {
+    document.getElementById('msg').textContent = '⚠ Could not load dropdown data — is the backend running?';
+    document.getElementById('msg').className = 'alert alert-warn show';
+    document.getElementById('msg').style.display = 'block';
+  }
+}
+
+function getSelectedThreats() {
+  const sel = document.getElementById('threatids');
+  return Array.from(sel.selectedOptions).map(o => parseInt(o.value));
+}
+
+function updatePreview() {
+  const cn  = document.getElementById('commonname').value    || '...';
+  const sn  = document.getElementById('scientificname').value || '...';
+  const ti  = document.getElementById('organismtypeid').value || '?';
+  const si  = document.getElementById('statusid').value       || '?';
+  const ri  = document.getElementById('regionid').value       || '?';
+  const hab = document.getElementById('habitat').value        || '...';
+  const tids = getSelectedThreats();
+
+  document.getElementById('sql-preview').innerHTML =
+    `<span style="color:#2EAF7D">INSERT INTO</span> public.species
+  (commonname, scientificname,
+   organismtypeid, statusid, regionid, habitat)
+<span style="color:#2EAF7D">VALUES</span>
+  (<span style="color:#449342">'${cn}'</span>,
+   <span style="color:#449342">'${sn}'</span>,
+   <span style="color:#1a7a60">${ti}</span>, <span style="color:#1a7a60">${si}</span>, <span style="color:#1a7a60">${ri}</span>,
+   <span style="color:#449342">'${hab}'</span>);` +
+   (tids.length ? `\n\n<span style="color:#888">-- Junction table links:</span>
+<span style="color:#2EAF7D">INSERT INTO</span> public.speciesthreats
+  (speciesid, threatid)
+<span style="color:#2EAF7D">VALUES</span> ${tids.map(t => `(NEW_ID, <span style="color:#1a7a60">${t}</span>)`).join(', ')};` : '');
+
+  document.getElementById('json-preview').textContent = JSON.stringify({
+    commonname: cn, scientificname: sn,
+    organismtypeid: ti, statusid: si, regionid: ri,
+    habitat: hab, threatids: tids
+  }, null, 2);
+}
+
+async function submitAdd() {
+  const cn  = document.getElementById('commonname').value.trim();
+  const sn  = document.getElementById('scientificname').value.trim();
+  const ti  = parseInt(document.getElementById('organismtypeid').value);
+  const si  = parseInt(document.getElementById('statusid').value);
+  const ri  = parseInt(document.getElementById('regionid').value);
+  const hab = document.getElementById('habitat').value.trim();
+  const tids = getSelectedThreats();
+
+  const msgEl = document.getElementById('msg');
+  msgEl.style.display = 'block';
+
+  if (!cn || !sn || !ti || !si || !ri) {
+    msgEl.textContent = '✗ Please fill in all required fields.';
+    msgEl.className = 'alert alert-error show';
+    return;
+  }
+
+  try {
+    // POST /species — sends data to Express backend → inserts into PostgreSQL
+    const result = await SpeciesAPI.create({
+      commonname: cn, scientificname: sn,
+      organismtypeid: ti, statusid: si, regionid: ri,
+      habitat: hab || null, threatids: tids
+    });
+    msgEl.textContent = `✓ ${result.message} (ID: ${result.species.speciesid})`;
+    msgEl.className = 'alert alert-success show';
+    clearForm();
+  } catch (err) {
+    msgEl.textContent = '✗ Error: ' + err.message;
+    msgEl.className = 'alert alert-error show';
+  }
+}
+
+function clearForm() {
+  ['commonname','scientificname','habitat'].forEach(id => document.getElementById(id).value = '');
+  ['organismtypeid','statusid','regionid'].forEach(id => document.getElementById(id).value = '');
+  const sel = document.getElementById('threatids');
+  Array.from(sel.options).forEach(o => o.selected = false);
+  updatePreview();
+}
+
+loadDropdowns();
+</script>
+
+</body>
+</html>

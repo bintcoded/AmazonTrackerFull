@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Delete Species · Amazon Tracker</title>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span>🌿 Amazon Tracker</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="View.html">View Species</a>
+  <a class="nav-link" href="Add.html">Add Species</a>
+  <a class="nav-link" href="Edit.html">Update Species</a>
+  <a class="nav-link active" href="Delete.html">Delete Species</a>
+  <a class="nav-link" href="documentation.html">Documentation</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Database · DELETE Operation</div>
+    <h1>Delete <em>Species Record</em></h1>
+    <p>Search for a species, review the record, then confirm deletion. This sends a DELETE request to <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--lime);">DELETE /species/:id</code>.</p>
+  </div>
+
+  <div class="section">
+
+    <div class="alert alert-warn show" style="max-width:640px;">
+      ⚠ <strong>Warning:</strong> Deletion is permanent. The backend will first delete all child records in <code style="font-family:'DM Mono',monospace;">speciesthreats</code>, then delete the species record.
+    </div>
+
+    <!-- Search -->
+    <div class="sec-title" style="margin-top:24px;">Step 1 — Find the Record</div>
+    <p class="sec-sub">Search by name or ID</p>
+
+    <div class="form-card" style="max-width:640px;margin-bottom:28px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div class="form-group" style="flex:1;margin-bottom:0;min-width:180px;">
+          <label>Species ID</label>
+          <input type="number" id="delete_id" class="form-control" placeholder="e.g., 2">
+        </div>
+        <div class="form-group" style="flex:2;margin-bottom:0;min-width:200px;">
+          <label>Or search by name</label>
+          <input type="text" id="delete_name" class="form-control" placeholder="e.g., Jaguar" oninput="searchByName()">
+        </div>
+        <button class="btn btn-outline" onclick="loadById()">Load by ID</button>
+      </div>
+      <div id="search-results" style="margin-top:14px;display:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#d63030;margin-bottom:8px;">Select a species to delete</div>
+        <div id="results-list"></div>
+      </div>
+    </div>
+
+    <!-- Confirm Panel (hidden until selected) -->
+    <div id="confirm-wrap" style="display:none;">
+      <div class="sec-title">Step 2 — Confirm Deletion</div>
+      <p class="sec-sub">Review before deleting</p>
+
+      <div id="msg" class="alert" style="display:none;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 290px;gap:28px;align-items:start;">
+
+        <!-- Record display -->
+        <div style="background:#fff;border:2px solid #d63030;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(214,48,48,.1);">
+          <div style="background:#d63030;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:#fff;text-transform:uppercase;">Record to Delete</span>
+            <span id="badge-id" style="background:rgba(255,255,255,.2);color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:3px;"></span>
+          </div>
+          <div style="padding:24px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr><td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;padding:9px 0;border-bottom:1px solid var(--ice);text-transform:uppercase;letter-spacing:1px;">Field</td><td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;padding:9px 0 9px 12px;border-bottom:1px solid var(--ice);text-transform:uppercase;letter-spacing:1px;">Value</td></tr>
+              <tr><td style="font-size:12px;color:#888;padding:9px 0;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;">commonname</td><td id="d_common" style="font-weight:700;color:var(--dark);padding:9px 0 9px 12px;border-bottom:1px solid var(--ice);"></td></tr>
+              <tr><td style="font-size:12px;color:#888;padding:9px 0;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;">scientificname</td><td id="d_sci" style="font-style:italic;color:#1a6b50;padding:9px 0 9px 12px;border-bottom:1px solid var(--ice);"></td></tr>
+              <tr><td style="font-size:12px;color:#888;padding:9px 0;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;">organism type</td><td id="d_type" style="padding:9px 0 9px 12px;border-bottom:1px solid var(--ice);"></td></tr>
+              <tr><td style="font-size:12px;color:#888;padding:9px 0;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;">status</td><td id="d_status" style="padding:9px 0 9px 12px;border-bottom:1px solid var(--ice);"></td></tr>
+              <tr><td style="font-size:12px;color:#888;padding:9px 0;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;">region</td><td id="d_region" style="padding:9px 0 9px 12px;border-bottom:1px solid var(--ice);"></td></tr>
+              <tr><td style="font-size:12px;color:#888;padding:9px 0;font-family:'DM Mono',monospace;">threats</td><td id="d_threats" style="padding:9px 0 9px 12px;font-size:12px;"></td></tr>
+            </table>
+            <div style="margin-top:20px;padding:12px;background:rgba(214,48,48,.05);border:1px solid rgba(214,48,48,.2);border-radius:6px;margin-bottom:20px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:#d63030;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;">Cascading Effect</div>
+              <div style="font-size:12px;color:#a02020;">All records in <code style="font-family:'DM Mono',monospace;">speciesthreats</code> linked to this species will also be deleted first.</div>
+            </div>
+            <div style="display:flex;gap:12px;">
+              <button class="btn btn-danger" onclick="confirmDelete()">🗑️ Confirm Delete</button>
+              <button class="btn btn-outline" onclick="cancelDelete()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SQL Preview -->
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:8px;">SQL Being Sent</div>
+          <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;overflow:hidden;">
+            <div style="background:rgba(193,246,237,.25);padding:10px 16px;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dark);text-transform:uppercase;">DELETE Statements</div>
+            <pre id="delete-sql" style="padding:16px;font-size:11px;line-height:1.8;color:var(--dark);overflow-x:auto;white-space:pre-wrap;background:transparent;margin:0;"></pre>
+          </div>
+          <div style="margin-top:12px;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:14px;">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:6px;">API Endpoint</div>
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dark);">
+              <span style="color:#d63030;font-weight:700;">DELETE</span>
+              http://localhost:3000/species/<span id="endpoint-id">?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">Amazon Endangered Species Tracker · Natalia Dycha &amp; Sara Al-Hachami · Wayne State University · 2026</div>
+</footer>
+
+<script src="api.js"></script>
+<script>
+let currentSpecies = null;
+
+async function showSpecies(species) {
+  currentSpecies = species;
+  document.getElementById('badge-id').textContent = 'ID: ' + species.speciesid;
+  document.getElementById('d_common').textContent   = species.commonname;
+  document.getElementById('d_sci').textContent      = species.scientificname;
+  document.getElementById('d_type').textContent     = species.animaltype || species.type || '';
+  document.getElementById('d_status').textContent   = species.status || species.statusvalue || '';
+  document.getElementById('d_region').textContent   = species.region || species.regionname || '';
+  const threats = Array.isArray(species.threats)
+    ? species.threats.map(t => t.threatname).join(', ')
+    : (species.threats || 'None');
+  document.getElementById('d_threats').textContent  = threats || 'None';
+  document.getElementById('endpoint-id').textContent = species.speciesid;
+
+  document.getElementById('delete-sql').innerHTML =
+    `<span style="color:#d63030">-- Step 1: remove child records</span>
+<span style="color:#2EAF7D">DELETE FROM</span> public.speciesthreats
+<span style="color:#2EAF7D">WHERE</span> speciesid = <span style="color:#1a7a60">${species.speciesid}</span>;
+
+<span style="color:#d63030">-- Step 2: remove the species</span>
+<span style="color:#2EAF7D">DELETE FROM</span> public.species
+<span style="color:#2EAF7D">WHERE</span> speciesid = <span style="color:#1a7a60">${species.speciesid}</span>;
+<span style="color:#888">-- Deletes: ${species.commonname}</span>`;
+
+  document.getElementById('confirm-wrap').style.display = 'block';
+  document.getElementById('search-results').style.display = 'none';
+  document.getElementById('confirm-wrap').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function loadById() {
+  const id = document.getElementById('delete_id').value.trim();
+  if (!id) return alert('Enter a species ID');
+  try {
+    // GET /species/:id — fetch single record
+    const species = await SpeciesAPI.getOne(id);
+    showSpecies(species);
+  } catch (err) {
+    alert('Species not found: ' + err.message);
+  }
+}
+
+async function searchByName() {
+  const q = document.getElementById('delete_name').value.trim();
+  const wrap = document.getElementById('search-results');
+  if (!q) { wrap.style.display = 'none'; return; }
+  try {
+    const results = await SpeciesAPI.getAll({ search: q });
+    wrap.style.display = 'block';
+    if (!results.length) {
+      document.getElementById('results-list').innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:#888;padding:8px;">No results.</div>';
+      return;
+    }
+    document.getElementById('results-list').innerHTML = results.map(sp =>
+      `<div onclick="loadAndShow(${sp.speciesid})"
+        style="padding:10px 14px;border:1px solid rgba(214,48,48,.2);border-radius:6px;margin-bottom:6px;cursor:pointer;background:#fff;transition:all .15s;"
+        onmouseover="this.style.background='rgba(214,48,48,.04)';this.style.borderColor='#d63030'"
+        onmouseout="this.style.background='#fff';this.style.borderColor='rgba(214,48,48,.2)'">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:#d63030;margin-right:10px;">ID:${sp.speciesid}</span>
+        <strong style="color:var(--dark);">${sp.commonname}</strong>
+        <em style="font-size:12px;color:#449342;margin-left:8px;">${sp.scientificname}</em>
+      </div>`
+    ).join('');
+  } catch { wrap.style.display = 'none'; }
+}
+
+async function loadAndShow(id) {
+  try {
+    const species = await SpeciesAPI.getOne(id);
+    showSpecies(species);
+  } catch (err) { alert(err.message); }
+}
+
+async function confirmDelete() {
+  if (!currentSpecies) return;
+  const msgEl = document.getElementById('msg');
+  msgEl.style.display = 'block';
+  try {
+    // DELETE /species/:id — backend deletes speciesthreats then species
+    const result = await SpeciesAPI.remove(currentSpecies.speciesid);
+    msgEl.textContent = '✓ ' + result.message;
+    msgEl.className = 'alert alert-success show';
+    currentSpecies = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    msgEl.textContent = '✗ Error: ' + err.message;
+    msgEl.className = 'alert alert-error show';
+  }
+}
+
+function cancelDelete() {
+  document.getElementById('confirm-wrap').style.display = 'none';
+  document.getElementById('delete_id').value = '';
+  document.getElementById('delete_name').value = '';
+  currentSpecies = null;
+}
+</script>
+
+</body>
+</html>

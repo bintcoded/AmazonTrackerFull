@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Documentation · Amazon Tracker</title>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span>🌿 Amazon Tracker</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="view.html">View Species</a>
+  <a class="nav-link" href="add.html">Add Species</a>
+  <a class="nav-link" href="edit.html">Update Species</a>
+  <a class="nav-link" href="delete.html">Delete Species</a>
+  <a class="nav-link active" href="documentation.html">Documentation</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Project · Documentation</div>
+    <h1>Project <em>Documentation</em></h1>
+    <p>Overview, team information, setup instructions, and a user guide for the Amazon Endangered Species Tracker.</p>
+  </div>
+
+  <div class="section">
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:start;">
+
+      <!-- Sidebar TOC -->
+      <div style="position:sticky;top:80px;">
+        <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:20px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:14px;">Contents</div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <a href="#overview"     class="toc-link">Project Overview</a>
+            <a href="#app-info"     class="toc-link">App &amp; Team Info</a>
+            <a href="#requirements" class="toc-link">Requirements</a>
+            <a href="#setup"        class="toc-link">Setup Instructions</a>
+            <a href="#schema"       class="toc-link">Database Schema</a>
+            <a href="#user-guide"   class="toc-link">User Guide</a>
+            <a href="#sources"      class="toc-link">Data Sources</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div>
+
+        <!-- Overview -->
+        <div class="doc-section" id="overview">
+          <h3>Project Overview</h3>
+          <p>The <strong>Amazon Endangered Species Tracker</strong> is a web-based relational database application developed as part of a university database course at Wayne State University. The application allows users to explore, manage, and query information about endangered and threatened wildlife species in the Amazon rainforest ecosystem.</p>
+          <p>The database tracks species across 4 organism types (Mammals, Birds, Reptiles, and Amphibians), covering both currently threatened and historically extinct species. Data is sourced from the IUCN Red List, BirdLife International, the WWF Living Planet Report 2024, and peer-reviewed academic literature including <em>Amazonian Mammals: Current Knowledge and Conservation Priorities</em> (Springer, 2023).</p>
+          <p>The application demonstrates a normalized relational database design using 6 interconnected tables with proper primary and foreign key constraints, a many-to-many junction table (speciesthreats), and SQL queries covering SELECT, INSERT, UPDATE, and DELETE operations.</p>
+        </div>
+
+        <!-- App & Team -->
+        <div class="doc-section" id="app-info">
+          <h3>App &amp; Team Information</h3>
+          <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;overflow:hidden;margin-bottom:20px;">
+            <table style="width:100%;font-size:13px;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid var(--ice);">
+                <td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;padding:12px 16px;width:160px;background:rgba(193,246,237,.1);">App Name</td>
+                <td style="font-weight:700;color:var(--dark);padding:12px 16px;">Amazon Endangered Species Tracker</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--ice);">
+                <td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;padding:12px 16px;background:rgba(193,246,237,.1);">Version</td>
+                <td style="color:var(--dark);padding:12px 16px;">1.0.0, April 2026</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--ice);">
+                <td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;padding:12px 16px;background:rgba(193,246,237,.1);">Course</td>
+                <td style="color:var(--dark);padding:12px 16px;">Database Systems · Wayne State University</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--ice);">
+                <td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;padding:12px 16px;background:rgba(193,246,237,.1);">Instructor</td>
+                <td style="color:var(--dark);padding:12px 16px;">Dr. Farah Kamw, Assistant Professor of Teaching, Wayne State University</td>
+              </tr>
+              <tr>
+                <td style="font-family:'DM Mono',monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;padding:12px 16px;background:rgba(193,246,237,.1);">Technologies</td>
+                <td style="color:var(--dark);padding:12px 16px;">HTML5, CSS3, JavaScript (Vanilla), PostgreSQL 18.1</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="role">Developer &amp; Designer</div>
+              <div class="name">Natalia Dycha</div>
+              <div style="font-size:12px;color:#449342;margin-top:4px;">Database Course Project · April 2026</div>
+            </div>
+            <div class="team-card">
+              <div class="role">Developer &amp; Designer</div>
+              <div class="name">Sara Al-Hachami</div>
+              <div style="font-size:12px;color:#449342;margin-top:4px;">Database Course Project · April 2026</div>
+            </div>
+            <div class="team-card">
+              <div class="role">Course Instructor</div>
+              <div class="name">Dr. Farah Kamw</div>
+              <div style="font-size:12px;color:#449342;margin-top:4px;">Assistant Professor of Teaching<br>Wayne State University</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="doc-section" id="requirements">
+          <h3>Tools &amp; Hardware Requirements</h3>
+
+          <p><strong>Software Requirements</strong></p>
+          <ul class="checklist">
+            <li>PostgreSQL 18.1 (database engine)</li>
+            <li>pgAdmin 4 (database management GUI)</li>
+            <li>A modern web browser: Chrome, Firefox, Safari, or Edge</li>
+            <li>A local web server (VS Code Live Server, Python http.server, or Apache)</li>
+          </ul>
+
+          <p style="margin-top:18px;"><strong>Hardware Requirements</strong></p>
+          <ul class="checklist">
+            <li>Minimum 4 GB RAM (8 GB recommended)</li>
+            <li>Minimum 1 GB available disk space</li>
+            <li>Internet connection (required for Google Fonts to load correctly)</li>
+          </ul>
+        </div>
+
+        <!-- Setup Instructions -->
+        <div class="doc-section" id="setup">
+          <h3>Setup Instructions</h3>
+
+          <p><strong>Step 1: Install PostgreSQL</strong></p>
+          <p>Download and install PostgreSQL 18+ from <code>postgresql.org/download</code>. During setup, note the superuser password you create. Also install pgAdmin 4 for a visual interface.</p>
+
+          <p><strong>Step 2: Create the Database</strong></p>
+          <p>Open pgAdmin, connect to your local server, and create a new database named <code>Amazon Species</code>. Alternatively, run this in psql:</p>
+          <pre>CREATE DATABASE "Amazon Species"
+  WITH TEMPLATE = template0
+  ENCODING = 'UTF8'
+  LOCALE = 'English_United States.1252';</pre>
+
+          <p><strong>Step 3: Restore the Database from Backup</strong></p>
+          <p>Use the provided <code>Amazon_Species_Database_.backup</code> file to restore all tables and data:</p>
+          <pre># Using pg_restore on the command line:
+pg_restore -U postgres -d "Amazon Species" Amazon_Species_Database_.backup
+
+# Or in pgAdmin:
+# Right-click the database → Restore → select the .backup file</pre>
+
+          <p><strong>Step 4: Verify the Tables</strong></p>
+          <p>After restoring, confirm all 6 tables exist and contain data:</p>
+          <pre>-- Run in pgAdmin Query Tool:
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
+ORDER BY table_name;
+
+-- Expected tables:
+-- organismtype, region, species, speciesthreats, status, threat</pre>
+
+          <p><strong>Step 5: Run the Web Interface</strong></p>
+          <p>Navigate to the project folder and start a local server:</p>
+          <pre># Option 1 — Python (Python 3):
+cd AmazonTracker/
+python -m http.server 8080
+# Then open: http://localhost:8080/index.html
+
+# Option 2 — VS Code Live Server:
+# Open the AmazonTracker/ folder in VS Code
+# Right-click index.html → Open with Live Server</pre>
+
+          <p><strong>Project Folder Structure</strong></p>
+          <pre>AmazonTracker/
+├── css/
+│   └── style.css              ← Shared stylesheet for all pages
+├── index.html                 ← Main homepage (A)
+├── view.html                  ← Browse &amp; search species (E)
+├── add.html                   ← Add new species (B)
+├── edit.html                  ← Update species record (D)
+├── delete.html                ← Delete species record (C)
+└── documentation.html         ← This page (F)</pre>
+        </div>
+
+        <!-- Database Schema -->
+        <div class="doc-section" id="schema">
+          <h3>Database Schema</h3>
+          <p>The database uses PostgreSQL with 6 tables in the <code>public</code> schema:</p>
+
+          <div class="table-wrap" style="margin:16px 0;">
+            <table class="data-table">
+              <thead>
+                <tr><th>Table</th><th>Primary Key</th><th>Foreign Keys</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--lime);">species</code></td><td>speciesid</td><td>organismtypeid, statusid, regionid</td><td>Core table, one row per species</td></tr>
+                <tr><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--lime);">organismtype</code></td><td>organismtypeid</td><td>None</td><td>Animal classification (Mammal, Bird, etc.)</td></tr>
+                <tr><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--lime);">status</code></td><td>statusid</td><td>None</td><td>IUCN conservation status with risklevel</td></tr>
+                <tr><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--lime);">region</code></td><td>regionid</td><td>None</td><td>Amazon sub-regions and ecosystems</td></tr>
+                <tr><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--lime);">threat</code></td><td>threatid</td><td>None</td><td>Environmental threat categories</td></tr>
+                <tr><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--lime);">speciesthreats</code></td><td>(speciesid, threatid)</td><td>speciesid, threatid</td><td>Many-to-many junction table</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>Key SQL: Create Tables</strong></p>
+          <pre>CREATE TABLE public.organismtype (
+    organismtypeid integer NOT NULL,
+    type           character varying(100),
+    organismdescription character varying(300),
+    CONSTRAINT organismtype_pkey PRIMARY KEY (organismtypeid)
+);
+
+CREATE TABLE public.status (
+    statusid   integer NOT NULL,
+    statusvalue character varying(200),
+    risklevel  integer,
+    CONSTRAINT status_pkey PRIMARY KEY (statusid)
+);
+
+CREATE TABLE public.region (
+    regionid   integer NOT NULL,
+    regionname character varying(200),
+    ecosystem  character varying(200),
+    CONSTRAINT region_pkey PRIMARY KEY (regionid)
+);
+
+CREATE TABLE public.threat (
+    threatid  integer NOT NULL,
+    threatname character varying(200),
+    CONSTRAINT threat_pkey PRIMARY KEY (threatid)
+);
+
+CREATE TABLE public.species (
+    speciesid      integer NOT NULL,
+    commonname     character varying(200),
+    scientificname character varying(200),
+    organismtypeid integer REFERENCES public.organismtype(organismtypeid),
+    statusid       integer REFERENCES public.status(statusid),
+    regionid       integer REFERENCES public.region(regionid),
+    habitat        character varying(200),
+    CONSTRAINT species_pkey PRIMARY KEY (speciesid)
+);
+
+CREATE TABLE public.speciesthreats (
+    speciesid integer REFERENCES public.species(speciesid),
+    threatid  integer REFERENCES public.threat(threatid),
+    CONSTRAINT speciesthreats_pkey PRIMARY KEY (speciesid, threatid)
+);</pre>
+
+          <p><strong>Example SQL Queries:</strong></p>
+          <pre>-- List all species ordered by extinction risk
+SELECT s.commonname, s.scientificname,
+       st.statusvalue, st.risklevel,
+       o.type AS organism_type,
+       r.regionname
+FROM species s
+JOIN status st ON s.statusid = st.statusid
+JOIN organismtype o ON s.organismtypeid = o.organismtypeid
+JOIN region r ON s.regionid = r.regionid
+ORDER BY st.risklevel ASC, s.commonname ASC;
+
+-- Find all threats for a specific species
+SELECT s.commonname, t.threatname
+FROM speciesthreats st
+JOIN species s ON st.speciesid = s.speciesid
+JOIN threat t ON st.threatid = t.threatid
+WHERE s.speciesid = 1;</pre>
+        </div>
+
+        <!-- User Guide -->
+        <div class="doc-section" id="user-guide">
+          <h3>User Guide</h3>
+
+          <p><strong>A. Home Page (index.html)</strong></p>
+          <p>The main landing page introduces the Amazon Endangered Species Tracker project. It displays key statistics about the database, background information on the Amazon rainforest, the data sources used, and navigation cards linking to each section of the application. No interaction is required. Simply click any card or the navigation menu to explore.</p>
+
+          <p><strong>B. Add Species (add.html)</strong></p>
+          <p>This page contains a form to insert a new species into the database. Fill in the common name, scientific name, organism type, IUCN conservation status, region, and primary threat. The SQL Preview sidebar updates in real time to show the exact INSERT statement that would be sent to the database. Click <em>Insert Record</em> to submit. Required fields are marked with a red asterisk (*).</p>
+
+          <p><strong>C. Delete Species (delete.html)</strong></p>
+          <p>Search for a species by name or ID using the search box. Matching records appear as clickable results. Selecting a record shows a full record card with a confirmation step before deletion. The SQL preview shows both the child-record DELETE (from speciesthreats) and the parent-record DELETE (from species), because foreign key constraints require child records to be removed first.</p>
+
+          <p><strong>D. Update Species (edit.html)</strong></p>
+          <p>Search for a species by name or ID. Selecting a result populates all fields with the current values. Edit any field: common name, scientific name, organism type, status, region, population, or habitat. Click <em>Save Changes</em>. The SQL Preview sidebar shows the UPDATE statement with the current field values in real time.</p>
+
+          <p><strong>E. View Species (view.html)</strong></p>
+          <p>Browse all species in the database using the search bar and filter controls. Filter by IUCN risk level (using the colored legend buttons), animal type, or primary threat. Use the sort dropdown to order by extinction risk, name A to Z, or animal type. Each species card shows the scientific name, status badge, region, population estimate, and a brief description.</p>
+
+          <p><strong>F. Documentation (documentation.html)</strong></p>
+          <p>This page. Contains the project overview, team information, software and hardware requirements, step-by-step setup instructions, full database schema with CREATE TABLE statements, example SQL queries, and the data sources bibliography.</p>
+        </div>
+
+        <!-- Data Sources -->
+        <div class="doc-section" id="sources">
+          <h3>Data Sources</h3>
+          <ul>
+            <li>International Union for Conservation of Nature. (2023). <em>IUCN Red List of Threatened Species.</em> <a href="https://www.iucnredlist.org" target="_blank" style="color:var(--lime);">iucnredlist.org</a></li>
+            <li>BirdLife International. (2023). <em>Species Factsheets.</em> <a href="https://www.birdlife.org" target="_blank" style="color:var(--lime);">birdlife.org</a></li>
+            <li>World Wildlife Fund. (2024). <em>Living Planet Report 2024: A System in Peril.</em> WWF, Gland, Switzerland. <a href="https://www.worldwildlife.org" target="_blank" style="color:var(--lime);">worldwildlife.org</a></li>
+            <li>Igarapé Institute. (2022). <em>Inventory of Data on Economic Activity and Deforestation in the Amazon Basin</em> (SP59). <a href="https://igarape.org.br" target="_blank" style="color:var(--lime);">igarape.org.br</a></li>
+            <li>Rosas-Ribeiro, P.F., et al. (2023). <em>Amazonian Mammals: Current Knowledge and Conservation Priorities.</em> Springer, Cham. ISBN 978-3-031-20330-1.</li>
+            <li>Gatti, L.V., et al. (2021). Amazonia as a carbon source linked to deforestation and climate change. <em>Nature</em>, 595, 388-393.</li>
+          </ul>
+        </div>
+
+      </div><!-- end main content -->
+    </div><!-- end grid -->
+  </div><!-- end section -->
+</div><!-- end wrap -->
+
+<footer>
+  <div class="wrap">Amazon Endangered Species Tracker · Natalia Dycha &amp; Sara Al-Hachami · Wayne State University · Database Course 2026</div>
+</footer>
+
+<style>
+.toc-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dark);
+  text-decoration: none; padding: 6px 10px;
+  border-radius: 4px; display: block;
+  transition: all .15s;
+}
+.toc-link:hover { background: rgba(46,175,125,.1); color: #1a6b50; }
+</style>
+
+</body>
+</html>

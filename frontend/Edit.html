@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Update Species · Amazon Tracker</title>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span>🌿 Amazon Tracker</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link" href="View.html">View Species</a>
+  <a class="nav-link" href="Add.html">Add Species</a>
+  <a class="nav-link active" href="Edit.html">Update Species</a>
+  <a class="nav-link" href="Delete.html">Delete Species</a>
+  <a class="nav-link" href="documentation.html">Documentation</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Database · UPDATE Operation</div>
+    <h1>Update <em>Species Record</em></h1>
+    <p>Search for a species by ID or name, edit the fields, then save. This sends a PUT request to <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--lime);">PUT /species/:id</code>.</p>
+  </div>
+
+  <div class="section">
+
+    <!-- Step 1: Search -->
+    <div class="sec-title">Step 1 — Find the Record</div>
+    <p class="sec-sub">Enter species ID or name</p>
+
+    <div class="form-card" style="max-width:100%;margin-bottom:28px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div class="form-group" style="flex:1;margin-bottom:0;min-width:180px;">
+          <label>Species ID</label>
+          <input type="number" id="search_id" class="form-control" placeholder="e.g., 2">
+        </div>
+        <div class="form-group" style="flex:2;margin-bottom:0;min-width:200px;">
+          <label>Or search by name</label>
+          <input type="text" id="search_name" class="form-control" placeholder="e.g., Jaguar" oninput="searchByName()">
+        </div>
+        <button class="btn btn-outline" onclick="loadById()">Load by ID</button>
+      </div>
+      <div id="search-results" style="margin-top:14px;display:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:8px;">Select a species</div>
+        <div id="results-list"></div>
+      </div>
+    </div>
+
+    <!-- Step 2: Edit Form (hidden until loaded) -->
+    <div id="edit-wrap" style="display:none;">
+      <div class="sec-title">Step 2 — Edit Fields</div>
+      <p class="sec-sub">Modify and save changes</p>
+
+      <div id="msg" class="alert" style="display:none;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 290px;gap:28px;align-items:start;">
+        <div class="form-card">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--ice);">
+            Editing Species ID: <span id="editing-id" style="color:var(--dark);font-weight:700;"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Common Name</label>
+            <input type="text" id="edit_commonname" class="form-control" oninput="updateSQL()">
+          </div>
+          <div class="form-group">
+            <label>Scientific Name</label>
+            <input type="text" id="edit_scientificname" class="form-control" oninput="updateSQL()">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Animal Type</label>
+              <select id="edit_organismtypeid" class="form-control" onchange="updateSQL()">
+                <option value="">Loading...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>IUCN Status</label>
+              <select id="edit_statusid" class="form-control" onchange="updateSQL()">
+                <option value="">Loading...</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Region</label>
+              <select id="edit_regionid" class="form-control" onchange="updateSQL()">
+                <option value="">Loading...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Habitat</label>
+              <input type="text" id="edit_habitat" class="form-control" oninput="updateSQL()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Threats (hold Ctrl/Cmd for multiple)</label>
+            <select id="edit_threatids" class="form-control" multiple style="height:110px;" onchange="updateSQL()">
+              <option value="">Loading...</option>
+            </select>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:8px;">
+            <button class="btn btn-warn" onclick="submitUpdate()">💾 Save Changes</button>
+            <button class="btn btn-outline" onclick="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- SQL Preview -->
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:8px;">SQL Being Sent</div>
+          <div style="background:#fff;border:1.5px solid var(--ice);border-radius:10px;overflow:hidden;">
+            <div style="background:rgba(193,246,237,.25);padding:10px 16px;border-bottom:1px solid var(--ice);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dark);text-transform:uppercase;">UPDATE Statement</div>
+            <pre id="update-sql" style="padding:16px;font-size:11px;line-height:1.8;color:var(--dark);overflow-x:auto;white-space:pre-wrap;background:transparent;margin:0;"></pre>
+          </div>
+          <div style="margin-top:12px;background:#fff;border:1.5px solid var(--ice);border-radius:10px;padding:14px;">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:6px;">API Endpoint</div>
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dark);">
+              <span style="color:#d4821a;font-weight:700;">PUT</span>
+              http://localhost:3000/species/<span id="endpoint-id">?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">Amazon Endangered Species Tracker · Natalia Dycha &amp; Sara Al-Hachami · Wayne State University · 2026</div>
+</footer>
+
+<script src="api.js"></script>
+<script>
+let currentId = null;
+
+async function loadDropdowns(species) {
+  const [types, statuses, regions, threats] = await Promise.all([
+    LookupAPI.getOrganismTypes(),
+    LookupAPI.getStatuses(),
+    LookupAPI.getRegions(),
+    LookupAPI.getThreats()
+  ]);
+
+  await populateSelect('edit_organismtypeid', types,   'organismtypeid', 'type',        '— Select —');
+  await populateSelect('edit_statusid',       statuses, 'statusid',       'statusvalue', '— Select —');
+  await populateSelect('edit_regionid',       regions,  'regionid',       'regionname',  '— Select —');
+
+  const threatSel = document.getElementById('edit_threatids');
+  threatSel.innerHTML = '';
+  const selectedTheatIds = (species.threats || []).map(t => t.threatid);
+  threats.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.threatid;
+    opt.textContent = t.threatname;
+    opt.selected = selectedTheatIds.includes(t.threatid);
+    threatSel.appendChild(opt);
+  });
+
+  // Pre-fill current values
+  document.getElementById('edit_commonname').value    = species.commonname    || '';
+  document.getElementById('edit_scientificname').value = species.scientificname || '';
+  document.getElementById('edit_organismtypeid').value = species.organismtypeid || '';
+  document.getElementById('edit_statusid').value       = species.statusid       || '';
+  document.getElementById('edit_regionid').value       = species.regionid       || '';
+  document.getElementById('edit_habitat').value        = species.habitat        || '';
+}
+
+function getSelectedThreats() {
+  const sel = document.getElementById('edit_threatids');
+  return Array.from(sel.selectedOptions).map(o => parseInt(o.value));
+}
+
+function updateSQL() {
+  if (!currentId) return;
+  const cn  = document.getElementById('edit_commonname').value || '...';
+  const sn  = document.getElementById('edit_scientificname').value || '...';
+  const ti  = document.getElementById('edit_organismtypeid').value || '?';
+  const si  = document.getElementById('edit_statusid').value || '?';
+  const ri  = document.getElementById('edit_regionid').value || '?';
+  const hab = document.getElementById('edit_habitat').value || '...';
+  const tids = getSelectedThreats();
+
+  document.getElementById('update-sql').innerHTML =
+    `<span style="color:#2EAF7D">UPDATE</span> public.species
+<span style="color:#2EAF7D">SET</span>
+  commonname     = <span style="color:#449342">'${cn}'</span>,
+  scientificname = <span style="color:#449342">'${sn}'</span>,
+  organismtypeid = <span style="color:#1a7a60">${ti}</span>,
+  statusid       = <span style="color:#1a7a60">${si}</span>,
+  regionid       = <span style="color:#1a7a60">${ri}</span>,
+  habitat        = <span style="color:#449342">'${hab}'</span>
+<span style="color:#2EAF7D">WHERE</span> speciesid = <span style="color:#1a7a60">${currentId}</span>;` +
+    (tids.length ? `\n\n<span style="color:#888">-- Replace threat links:</span>
+<span style="color:#2EAF7D">DELETE FROM</span> public.speciesthreats
+  <span style="color:#2EAF7D">WHERE</span> speciesid = <span style="color:#1a7a60">${currentId}</span>;
+<span style="color:#2EAF7D">INSERT INTO</span> public.speciesthreats
+  (speciesid, threatid)
+<span style="color:#2EAF7D">VALUES</span> ${tids.map(t => `(<span style="color:#1a7a60">${currentId}</span>, <span style="color:#1a7a60">${t}</span>)`).join(', ')};` : '');
+
+  document.getElementById('endpoint-id').textContent = currentId;
+}
+
+async function loadSpeciesIntoForm(id) {
+  try {
+    // GET /species/:id — fetches one record from PostgreSQL
+    const species = await SpeciesAPI.getOne(id);
+    currentId = species.speciesid;
+    document.getElementById('editing-id').textContent = currentId;
+    document.getElementById('endpoint-id').textContent = currentId;
+    document.getElementById('edit-wrap').style.display = 'block';
+    document.getElementById('search-results').style.display = 'none';
+    await loadDropdowns(species);
+    updateSQL();
+    document.getElementById('edit-wrap').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    alert('Species not found: ' + err.message);
+  }
+}
+
+async function loadById() {
+  const id = document.getElementById('search_id').value.trim();
+  if (!id) return alert('Enter a species ID');
+  loadSpeciesIntoForm(id);
+}
+
+async function searchByName() {
+  const q = document.getElementById('search_name').value.trim();
+  const wrap = document.getElementById('search-results');
+  if (!q) { wrap.style.display = 'none'; return; }
+  try {
+    // GET /species?search=... — searches by name
+    const results = await SpeciesAPI.getAll({ search: q });
+    wrap.style.display = 'block';
+    if (!results.length) {
+      document.getElementById('results-list').innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:#888;padding:8px;">No results.</div>';
+      return;
+    }
+    document.getElementById('results-list').innerHTML = results.map(sp =>
+      `<div onclick="loadSpeciesIntoForm(${sp.speciesid})" style="padding:10px 14px;border:1px solid var(--ice);border-radius:6px;margin-bottom:6px;cursor:pointer;background:#fff;transition:all .15s;"
+        onmouseover="this.style.borderColor='#2EAF7D';this.style.background='rgba(46,175,125,.05)'"
+        onmouseout="this.style.borderColor='#C1F6ED';this.style.background='#fff'">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--lime);margin-right:10px;">ID:${sp.speciesid}</span>
+        <strong style="color:var(--dark);">${sp.commonname}</strong>
+        <em style="font-size:12px;color:#449342;margin-left:8px;">${sp.scientificname}</em>
+      </div>`
+    ).join('');
+  } catch (err) {
+    wrap.style.display = 'none';
+  }
+}
+
+async function submitUpdate() {
+  const msgEl = document.getElementById('msg');
+  msgEl.style.display = 'block';
+  try {
+    const data = {
+      commonname:     document.getElementById('edit_commonname').value.trim(),
+      scientificname: document.getElementById('edit_scientificname').value.trim(),
+      organismtypeid: parseInt(document.getElementById('edit_organismtypeid').value),
+      statusid:       parseInt(document.getElementById('edit_statusid').value),
+      regionid:       parseInt(document.getElementById('edit_regionid').value),
+      habitat:        document.getElementById('edit_habitat').value.trim(),
+      threatids:      getSelectedThreats()
+    };
+    // PUT /species/:id — updates record in PostgreSQL
+    const result = await SpeciesAPI.update(currentId, data);
+    msgEl.textContent = '✓ ' + result.message;
+    msgEl.className = 'alert alert-success show';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    msgEl.textContent = '✗ Error: ' + err.message;
+    msgEl.className = 'alert alert-error show';
+  }
+}
+
+function cancelEdit() {
+  document.getElementById('edit-wrap').style.display = 'none';
+  document.getElementById('search_id').value = '';
+  document.getElementById('search_name').value = '';
+  currentId = null;
+}
+</script>
+
+</body>
+</html>

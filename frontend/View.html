@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>View Species · Amazon Tracker</title>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;align-items:center;}
+.leg-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--dark);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.leg-btn{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:#02535c;cursor:pointer;padding:5px 11px;border-radius:3px;border:1px solid transparent;background:none;transition:all .15s;}
+.leg-btn.active{border-color:var(--lime);background:rgba(46,175,125,.1);color:var(--dark);}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.controls{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px;align-items:center;}
+.controls input,.controls select{padding:9px 13px;background:var(--white);border:1px solid var(--ice);border-radius:4px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;outline:none;transition:border-color .2s;}
+.controls input{min-width:200px;flex:1;max-width:280px;}
+.controls input:focus,.controls select:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(46,175,125,.1);}
+.res-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--dark);font-weight:600;margin-left:auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px;}
+.card{background:#fff;border:1px solid var(--ice);border-radius:8px;overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .2s;}
+.card:hover{border-color:var(--bright);transform:translateY(-2px);box-shadow:0 8px 24px rgba(63,208,201,.12);}
+.card-stripe{height:4px;}
+.card-body{padding:16px 18px 14px;}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+.card-name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:900;color:var(--dark);line-height:1.25;flex:1;margin-right:8px;}
+.badge{padding:3px 9px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;white-space:nowrap;font-weight:500;}
+.card-sci{font-style:italic;font-size:12px;font-weight:700;color:#1a6b50;margin-bottom:9px;}
+.card-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
+.chip{display:inline-block;padding:2px 9px;border-radius:3px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;}
+.card-habitat{font-size:13px;line-height:1.6;color:var(--dark);font-family:'Nunito',sans-serif;border-top:1px solid var(--ice);padding-top:9px;font-weight:700;}
+.card-threats{margin-top:7px;font-family:'DM Mono',monospace;font-size:10px;color:#449342;letter-spacing:.3px;}
+.loading{text-align:center;padding:60px 0;font-family:'DM Mono',monospace;font-size:11px;color:#449342;letter-spacing:3px;}
+.error-msg{text-align:center;padding:60px 0;font-family:'DM Mono',monospace;font-size:11px;color:#d63030;letter-spacing:2px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span>🌿 Amazon Tracker</span></a>
+  <a class="nav-link" href="index.html">Home</a>
+  <a class="nav-link active" href="View.html">View Species</a>
+  <a class="nav-link" href="Add.html">Add Species</a>
+  <a class="nav-link" href="Edit.html">Update Species</a>
+  <a class="nav-link" href="Delete.html">Delete Species</a>
+  <a class="nav-link" href="documentation.html">Documentation</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Database · SELECT Query</div>
+    <h1>Species <em>Explorer</em></h1>
+    <p>Live data from the PostgreSQL database. Use the controls to filter species by risk, type, region, or search by name.</p>
+  </div>
+
+  <div class="section">
+    <!-- Risk Legend -->
+    <div class="legend">
+      <span class="leg-label">Risk →</span>
+      <button class="leg-btn active" onclick="setRiskFilter(this,'')"><span class="ldot" style="background:#aaa"></span>All</button>
+      <button class="leg-btn" onclick="setRiskFilter(this,'Critically Endangered')"><span class="ldot" style="background:#d63030"></span>CR</button>
+      <button class="leg-btn" onclick="setRiskFilter(this,'Endangered')"><span class="ldot" style="background:#d4821a"></span>EN</button>
+      <button class="leg-btn" onclick="setRiskFilter(this,'Vulnerable')"><span class="ldot" style="background:#449342"></span>VU</button>
+      <button class="leg-btn" onclick="setRiskFilter(this,'Near Threatened')"><span class="ldot" style="background:#2EAF7D"></span>NT</button>
+      <button class="leg-btn" onclick="setRiskFilter(this,'Least Concern')"><span class="ldot" style="background:#3FD0C9"></span>LC</button>
+      <button class="leg-btn" onclick="setRiskFilter(this,'Extinct')"><span class="ldot" style="background:#555"></span>EX</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search species..." oninput="loadSpecies()">
+      <select id="ftype" onchange="loadSpecies()">
+        <option value="">All Types</option>
+        <option>Mammal</option><option>Bird</option><option>Reptile</option><option>Amphibian</option>
+      </select>
+      <select id="fregion" onchange="loadSpecies()">
+        <option value="">All Regions</option>
+        <option>Brazilian Amazon</option>
+        <option>Peruvian Amazon</option>
+        <option>Colombian Amazon</option>
+        <option>Ecuadorian Amazon</option>
+        <option>Bolivian Amazon</option>
+      </select>
+      <button class="btn btn-outline" onclick="resetFilters()">Reset</button>
+      <span class="res-count" id="rcount"></span>
+    </div>
+
+    <div id="grid" class="grid">
+      <div class="loading" style="grid-column:1/-1">LOADING FROM DATABASE...</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">Amazon Endangered Species Tracker · Natalia Dycha &amp; Sara Al-Hachami · Wayne State University · 2026</div>
+</footer>
+
+<script src="api.js"></script>
+<script>
+const STATUS_COLORS = {
+  'Critically Endangered': '#d63030',
+  'Endangered':            '#d4821a',
+  'Vulnerable':            '#449342',
+  'Near Threatened':       '#2EAF7D',
+  'Least Concern':         '#3FD0C9',
+  'Extinct':               '#555555'
+};
+const STATUS_ABBR = {
+  'Critically Endangered': 'CR',
+  'Endangered':            'EN',
+  'Vulnerable':            'VU',
+  'Near Threatened':       'NT',
+  'Least Concern':         'LC',
+  'Extinct':               'EX'
+};
+
+let activeStatus = '';
+
+function setRiskFilter(btn, status) {
+  activeStatus = status;
+  document.querySelectorAll('.leg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadSpecies();
+}
+
+function resetFilters() {
+  activeStatus = '';
+  document.getElementById('search').value = '';
+  document.getElementById('ftype').value = '';
+  document.getElementById('fregion').value = '';
+  document.querySelectorAll('.leg-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  loadSpecies();
+}
+
+async function loadSpecies() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '<div class="loading" style="grid-column:1/-1">LOADING FROM DATABASE...</div>';
+
+  try {
+    const params = {};
+    const search = document.getElementById('search').value.trim();
+    const type   = document.getElementById('ftype').value;
+    const region = document.getElementById('fregion').value;
+
+    if (search)       params.search = search;
+    if (type)         params.type   = type;
+    if (region)       params.region = region;
+    if (activeStatus) params.status = activeStatus;
+
+    // GET /species : calls the Express backend
+    const species = await SpeciesAPI.getAll(params);
+
+    document.getElementById('rcount').textContent =
+      species.length + ' result' + (species.length !== 1 ? 's' : '');
+
+    if (!species.length) {
+      grid.innerHTML = '<div class="loading" style="grid-column:1/-1">NO SPECIES FOUND</div>';
+      return;
+    }
+
+    grid.innerHTML = species.map(sp => {
+      const col   = STATUS_COLORS[sp.status] || '#aaa';
+      const abbr  = STATUS_ABBR[sp.status]  || sp.status;
+      const badgeBg = col + '22';
+      return `
+        <div class="card">
+          <div class="card-stripe" style="background:${col}"></div>
+          <div class="card-body">
+            <div class="card-head">
+              <span class="card-name">${sp.commonname}</span>
+              <span class="badge" style="background:${badgeBg};color:${col};border:1px solid ${col}44">${abbr}</span>
+            </div>
+            <div class="card-sci">${sp.scientificname}</div>
+            <div class="card-meta">
+              <span class="chip" style="background:rgba(46,175,125,.12);color:#1a6b50">${sp.animaltype}</span>
+              <span class="chip" style="background:rgba(193,246,237,.3);color:#02535c">${sp.region}</span>
+            </div>
+            <div class="card-habitat">🌿 ${sp.habitat || '—'}</div>
+            <div class="card-threats">⚠ ${sp.threats}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch (err) {
+    grid.innerHTML = `<div class="error-msg" style="grid-column:1/-1">
+      ❌ Could not connect to server.<br>
+      <span style="font-size:10px;opacity:.7">Make sure Node.js backend is running on port 3000</span>
+    </div>`;
+    document.getElementById('rcount').textContent = '';
+  }
+}
+
+// Load on page open
+loadSpecies();
+</script>
+
+</body>
+</html>
